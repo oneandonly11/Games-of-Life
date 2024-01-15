@@ -22,12 +22,42 @@
 Color *evaluateOnePixel(Image *image, int row, int col)
 {
 	//YOUR CODE HERE
-}
+	Color* p = *(image->image+ (row) * image->cols + col);
+	Color* white = (Color*) malloc(sizeof(Color));
+	white->R = 255;
+	white->G = 255;
+	white->B = 255;
+	Color* black = (Color*) malloc(sizeof(Color));
+	white->R = 0;
+	white->G = 0;
+	white->B = 0;
+	if( p->B %2){
+		free(black);
+		return white;
+	}
+	else{
+		free(white);
+		return black;
+	}
 
+}
+//Now, we can look at just the rightmost bit in order to determine whether that pixel in the hidden message is white or black. Given that white is 
 //Given an image, creates a new image extracting the LSB of the B channel.
 Image *steganography(Image *image)
 {
 	//YOUR CODE HERE
+	Image* img = (Image*) malloc(sizeof(Image));
+	img->cols = image->cols;
+	img->rows = image->rows;
+	img->image = (Color**) malloc(sizeof(Color*) * image->cols * image->rows);
+	Color** p = img->image;
+	for(int i=0;i<image->rows;i++){
+		for(int j=0;j<image->cols;j++){
+			*p = evaluateOnePixel(image,i,j);
+			p++;
+		}
+	}
+	return img;
 }
 
 /*
@@ -46,4 +76,14 @@ Make sure to free all memory before returning!
 int main(int argc, char **argv)
 {
 	//YOUR CODE HERE
+	if(argc!=2)
+	return -1;
+	Image* image = readData(argv[1]);
+	Image* img = steganography(image);
+	writeData(img);
+	freeImage(image);
+	freeImage(img);
+	
+
+
 }
